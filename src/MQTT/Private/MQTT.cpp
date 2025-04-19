@@ -1,5 +1,5 @@
-#include "D:\Programming\PlatformIO\MQTT_ESP32\src\MQTT\MQTT.h"
-#include "D:\Programming\PlatformIO\MQTT_ESP32\src\Control\Control.h"
+#include "MQTT\MQTT.h"
+#include "Control\Control.h"
 
 // Config Wi-Fi and MQTT
 const char* ssid = "Lan phuong"; // Wifi namename

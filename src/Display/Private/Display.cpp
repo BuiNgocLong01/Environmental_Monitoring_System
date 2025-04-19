@@ -1,5 +1,5 @@
 #include <Wire.h>
-#include "D:\Programming\PlatformIO\MQTT_ESP32\src\Display\Display.h"
+#include "Display\Display.h"
 
 // Khởi tạo OLED
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);

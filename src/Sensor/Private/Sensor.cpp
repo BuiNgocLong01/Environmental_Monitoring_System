@@ -1,4 +1,4 @@
-#include "D:\Programming\PlatformIO\MQTT_ESP32\src\Sensor\Sensor.h"
+#include "Sensor\Sensor.h"
 
 // Khởi tạo cảm biến BME280
 Adafruit_BME280 bme;
