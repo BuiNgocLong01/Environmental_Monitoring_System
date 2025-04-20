@@ -27,7 +27,7 @@ void setup()
   // Init OLED
   setupDisplay();
 
-  // Init cảm biến
+  // Init sensor
   setupSensors();
 
   // Init control PIN (Led, Buzzer, Button)

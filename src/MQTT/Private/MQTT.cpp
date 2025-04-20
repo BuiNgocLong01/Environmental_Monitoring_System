@@ -4,11 +4,16 @@
 // Config Wi-Fi and MQTT
 const char* ssid = "Lan phuong"; // Wifi namename
 const char* password = "12345679"; // Wifi password
-const char* mqtt_server = "192.168.1.5"; // Raspberry Pi IP AddressAddress
+const char* mqtt_server = "192.168.1.11"; // Raspberry Pi IP Addrss
+
+#ifdef MQTT_SECURE
 const int mqtt_port = 8883;
-// const int mqtt_port = 8883;
-const char* mqtt_user = "longbui"; // Tên người dùng MQTT (nếu có xác thực)
-const char* mqtt_pass = "123456"; // Mật khẩu MQTT (nếu có xác thực)
+#else 
+const int mqtt_port = 1883;
+#endif
+
+const char* mqtt_user = "longbui"; // User
+const char* mqtt_pass = "123456"; // Password MQTT
 // Các topic MQTT
 const char* node_id = "node1"; // Thay đổi thành "node1" hoặc "node2"
 String temp_topic = String("esp32/") + node_id + "/temperature";
@@ -18,7 +23,7 @@ String led_control_topic = String("esp32/") + node_id + "/control/led";
 String buzzer_control_topic = String("esp32/") + node_id + "/control/buzzer";
 const char* button_topic = "esp32/button"; // Topic chung cho nút bấm 
 
-
+#ifdef MQTT_SECURE
 // Chứng chỉ CA 
 const char* ca_cert = \
 "-----BEGIN CERTIFICATE-----\n" \
@@ -43,9 +48,15 @@ const char* ca_cert = \
 "S9bCUN8jVgzTLJOA/zNZL22s05hEKNTkazX+S2XsE4XvHzNa/FCZx2norixQxk9n\n"
 "cOrY36uPGgmM1XEnqA==\n"
 "-----END CERTIFICATE-----\n";
-// Khởi tạo client MQTT
+#endif
+
+#ifdef MQTT_SECURE
+// Init client MQTT
 WiFiClientSecure espClient;
-// WiFiClient espClient;
+#else
+WiFiClient espClient;
+#endif
+
 PubSubClient client(espClient);
 
 // Hàm callback xử lý dữ liệu nhận được từ MQTT
@@ -74,7 +85,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 }
 
-void setupMQTT() {
+void setupMQTT() 
+{
   // Kết nối Wi-Fi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -83,15 +95,17 @@ void setupMQTT() {
   }
   Serial.println("Connected to WiFi");
 
-  // Kết nối đến MQTT broker
+  #ifdef MQTT_SECURE
+  // Connect to MQTT broker SSL/TLS
   espClient.setCACert(ca_cert);
-  // espClient.setInsecure();
+  #endif
+
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
 }
 
 void reconnect() {
-  // Kết nối lại nếu mất kết nối MQTT
+  // Re-connect if disconnected to MQTT
   while (!client.connected()) 
   {
     Serial.println("Attempting MQTT connection...");

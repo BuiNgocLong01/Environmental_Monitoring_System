@@ -5,6 +5,9 @@
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 
+// #define MQTT_SECURE
+// #define MQTT_SECURE
+
 // Cấu hình Wi-Fi và MQTT
 extern const char* ssid;
 extern const char* password;
@@ -24,8 +27,12 @@ extern const char* button_topic;
 
 // Khởi tạo client MQTT
 extern PubSubClient client;
-// extern WiFiClient espClient;
+
+#ifdef MQTT_SECURE
 extern WiFiClientSecure espClient;
+#else
+extern WiFiClient espClient;
+#endif
 
 // Hàm khởi tạo MQTT
 void setupMQTT();

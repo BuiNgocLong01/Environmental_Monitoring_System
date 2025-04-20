@@ -1,20 +1,20 @@
 #include <Wire.h>
 #include "Display\Display.h"
 
-// Khởi tạo OLED
+// Init OLED
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 void setupDisplay() {
-  // Khởi tạo I2C
+  // Init I2C
   Wire.begin();
 
-  // Khởi tạo OLED
+  // Init OLED
   if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for (;;);
   }
 
-  // Hiển thị thông báo khởi động
+  // Init display for the first time
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(WHITE);
@@ -26,10 +26,10 @@ void setupDisplay() {
 }
 
 void updateDisplay(float temperature, float humidity, int gasValue) {
-  // Cập nhật hiển thị trên OLED
+  // Update display on Oled
   display.clearDisplay();
 
-  // Vùng vàng (top 16 pixels)
+  // Init Name - Yellow zone
   display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
@@ -37,8 +37,8 @@ void updateDisplay(float temperature, float humidity, int gasValue) {
   display.setCursor(0, 8);
   display.println(F("Bui Ngoc Long"));
 
-  // Vùng xanh (y=16 to y=63): 3 hàng đều nhau (mỗi hàng 16 pixels)
-  // Hàng 1 (y=16 to y=31): Nhiệt độ
+  // Green zone (y=16 to y=63): 3 rows (16 pixel in 1 row)
+  // row 1 (y=16 to y=31): Temp
   display.setTextSize(1);
   display.setCursor(0, 16);
   display.print(F("Temp: "));
@@ -47,7 +47,7 @@ void updateDisplay(float temperature, float humidity, int gasValue) {
   display.print(temperature, 1);
   display.print(F(" C"));
 
-  // Hàng 2 (y=32 to y=47): Độ ẩm
+  // row 2 (y=32 to y=47): Humidity
   display.setTextSize(1);
   display.setCursor(0, 32);
   display.print(F("Humi: "));
@@ -56,7 +56,7 @@ void updateDisplay(float temperature, float humidity, int gasValue) {
   display.print(humidity, 1);
   display.print(F(" %"));
 
-  // Hàng 3 (y=40 to y=63): Khí gas
+  // row 3 (y=40 to y=63): Gas value
   display.setTextSize(1);
   display.setCursor(0, 48);
   display.print(F("Gas: "));
