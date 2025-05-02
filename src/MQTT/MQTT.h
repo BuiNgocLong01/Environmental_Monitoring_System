@@ -6,7 +6,6 @@
 #include <WiFiClientSecure.h>
 
 // #define MQTT_SECURE
-// #define MQTT_SECURE
 
 // Cấu hình Wi-Fi và MQTT
 extern const char* ssid;

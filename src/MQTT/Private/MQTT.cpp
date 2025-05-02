@@ -2,9 +2,11 @@
 #include "Control\Control.h"
 
 // Config Wi-Fi and MQTT
-const char* ssid = "Lan phuong"; // Wifi namename
+const char* ssid = "Ngoc Long"; // Wifi namename
 const char* password = "12345679"; // Wifi password
-const char* mqtt_server = "192.168.1.11"; // Raspberry Pi IP Addrss
+// const char* ssid = "Lan phuong"; // Wifi namename
+// const char* password = "12345679"; // Wifi password
+const char* mqtt_server = "192.168.1.7"; // Raspberry Pi IP Addrss
 
 #ifdef MQTT_SECURE
 const int mqtt_port = 8883;
@@ -15,7 +17,7 @@ const int mqtt_port = 1883;
 const char* mqtt_user = "longbui"; // User
 const char* mqtt_pass = "123456"; // Password MQTT
 // Các topic MQTT
-const char* node_id = "node1"; // Thay đổi thành "node1" hoặc "node2"
+const char* node_id = "node1"; // Change "node1" or "node2"
 String temp_topic = String("esp32/") + node_id + "/temperature";
 String humi_topic = String("esp32/") + node_id + "/humidity";
 String gas_topic = String("esp32/") + node_id + "/gas";
@@ -112,8 +114,8 @@ void reconnect() {
     String clientId = "ESP32-";
     clientId += node_id;
     clientId += String(random(0xffff), HEX);
-    if (client.connect(clientId.c_str(), mqtt_user, mqtt_pass)) {
-    // if (client.connect(clientId.c_str())){
+    // if (client.connect(clientId.c_str(), mqtt_user, mqtt_pass)) {
+    if (client.connect(clientId.c_str())){
       Serial.println("Connected to MQTT with SSL/TLS");
       client.subscribe(led_control_topic.c_str());
       client.subscribe(buzzer_control_topic.c_str());

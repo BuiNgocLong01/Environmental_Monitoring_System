@@ -17,7 +17,7 @@ int gasValue = 0;
 
 // Time update the data
 unsigned long lastUpdateTime = 0;
-const unsigned long updateInterval = 500; // Update each 30s
+const unsigned long updateInterval = 1000; // Update each 1s
 
 // SETUP Function
 void setup() 
@@ -53,6 +53,11 @@ void loop()
     temperature = readTemperature();
     humidity = readHumidity();
     gasValue = readGasValue();
+    gasValue = map(gasValue, 0, 4095, 0, 100);
+    if(node_id == "node2")
+    {
+      gasValue += 14;
+    }
 
     // Send data via MQTT
     publishSensorData(temperature, humidity, gasValue);
