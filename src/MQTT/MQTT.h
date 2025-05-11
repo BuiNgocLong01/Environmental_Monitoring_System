@@ -6,6 +6,8 @@
 #include <WiFiClientSecure.h>
 
 // #define MQTT_SECURE
+#define NODE_ID "node2" // Change "node1" or "node2"
+#define IP_ADDRESS "192.168.1.14"  // Raspberry Pi IP Addrss
 
 // Cấu hình Wi-Fi và MQTT
 extern const char* ssid;
