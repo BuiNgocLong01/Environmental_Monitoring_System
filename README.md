@@ -10,6 +10,9 @@ This repository contains the source code, documentation, and resources for a low
 ## Connection Diagram
 ![ConnectionDiagram](https://github.com/user-attachments/assets/e0b383ac-b9a1-453c-851d-7cf9948dc3bc)
 
+## NODE Interface
+![alt text](image.png)
+
 ## Features
 
 - Real-time monitoring of temperature, humidity, pressure, and gas levels.
