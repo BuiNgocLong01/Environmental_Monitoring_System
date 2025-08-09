@@ -1,0 +1,96 @@
+#include <Arduino.h>
+// #include <rdm6300.h>
+
+// #define RDM6300_RX_PIN 4 // read the SoftwareSerial doc above! may need to change this pin to 10...
+// #define READ_LED_PIN 13
+
+// Rdm6300 rdm6300;
+
+// void setup()
+// {
+// 	Serial.begin(115200);
+
+// 	pinMode(READ_LED_PIN, OUTPUT);
+// 	digitalWrite(READ_LED_PIN, LOW);
+
+// 	rdm6300.begin(RDM6300_RX_PIN);
+
+// 	Serial.println("\nPlace RFID tag near the rdm6300...");
+// }
+
+// void loop()
+// {
+// 	/* get_new_tag_id returns the tag_id of a "new" near tag,
+// 	following calls will return 0 as long as the same tag is kept near. */
+// 	if (rdm6300.get_new_tag_id())
+// 		Serial.println(rdm6300.get_tag_id(), HEX);
+
+// 	/* get_tag_id returns the tag_id as long as it is near, 0 otherwise. */
+// 	digitalWrite(READ_LED_PIN, rdm6300.get_tag_id());
+
+// 	delay(10);
+// }
+
+#include <Wire.h>
+#include <Adafruit_PN532.h>
+
+// Khởi tạo đối tượng PN532 cho giao tiếp I2C.
+// Vì không dùng chân IRQ và RST, ta có thể để là -1.
+Adafruit_PN532 nfc(-1, -1);
+
+void setup(void) {
+  // Bắt đầu giao tiếp Serial để hiển thị kết quả lên máy tính
+  Serial.begin(115200);
+  while (!Serial) {
+    delay(10); // Đợi Serial Monitor sẵn sàng
+  }
+
+  Serial.println("Dang khoi dong module PN532...");
+
+  // Khởi tạo module PN532
+  nfc.begin();
+
+  // Kiểm tra kết nối bằng cách lấy phiên bản firmware
+  uint32_t versiondata = nfc.getFirmwareVersion();
+  if (!versiondata) {
+    Serial.print("Khong tim thay module PN532! Vui long kiem tra lai ket noi.");
+    while (1) { // Dừng chương trình nếu không tìm thấy module
+      delay(10);
+    }
+  }
+
+  // In phiên bản firmware để xác nhận module hoạt động
+  Serial.print("Tim thay chip PN5"); Serial.println((versiondata >> 24) & 0xFF, HEX);
+  Serial.print("Firmware ver. "); Serial.print((versiondata >> 16) & 0xFF, DEC);
+  Serial.print('.'); Serial.println((versiondata >> 8) & 0xFF, DEC);
+
+  // Cấu hình module để đọc thẻ
+  nfc.SAMConfig();
+
+  Serial.println("\n-------------------------");
+  Serial.println("Vui long quet the NFC...");
+}
+
+void loop(void) {
+  uint8_t success;
+  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 }; // Buffer (bộ đệm) để lưu UID
+  uint8_t uidLength;                       // Biến để lưu độ dài của UID
+
+  // Chờ một thẻ Mifare được đưa vào (timeout là 1000ms)
+  // readPassiveTargetID() sẽ trả về 1 nếu phát hiện thẻ
+  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, 1000);
+
+  if (success) {
+    Serial.print("Phat hien the! UID: ");
+    // In UID ra màn hình dưới dạng HEX
+    for (uint8_t i = 0; i < uidLength; i++) {
+      if (i > 0) Serial.print(" ");
+      if (uid[i] < 0x10) Serial.print("0");
+      Serial.print(uid[i], HEX);
+    }
+    Serial.println("");
+
+    // Đợi 1 giây trước khi quét lại để tránh đọc liên tục
+    delay(1000);
+  }
+}

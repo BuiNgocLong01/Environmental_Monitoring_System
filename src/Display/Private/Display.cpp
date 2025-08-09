@@ -1,76 +1,70 @@
 #include <Wire.h>
-#include "Display\Display.h"
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include "Display/Display.h"
+#include "config.h"
 
-// Init OLED
+// Khởi tạo đối tượng display với các thông số từ config.h
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 void setupDisplay() {
-  // Init I2C
-  Wire.begin();
+    // Lưu ý: Wire.begin() đã được gọi trong main.cpp
 
-  // Init OLED
-  if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
-    Serial.println(F("SSD1306 allocation failed"));
-    for (;;);
-  }
+    // Khởi tạo màn hình OLED
+    if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+        Serial.println(F("SSD1306 allocation failed"));
+        for (;;); // Vòng lặp vô tận nếu không tìm thấy màn hình
+    }
 
-  // Init display for the first time
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-  display.println(F("Monitoring System"));
-  display.setCursor(0, 8);
-  display.println(F("Bui Ngoc Long"));
-  display.display();
+    // Hiển thị thông điệp khởi động
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(0, 0);
+    display.println(F("Monitoring System"));
+    display.setCursor(0, 10);
+    display.println(F("Bui Ngoc Long"));
+    display.display();
+    delay(2000); // Tạm dừng 2 giây để hiển thị thông điệp
 }
 
 void updateDisplay(float temperature, float humidity, int gasValue) {
-  // Update display on Oled
-  display.clearDisplay();
+    display.clearDisplay();
 
-  // Init Name - Yellow zone
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-  display.println(F("Monitoring System"));
-  display.setCursor(0, 8);
-  display.println(F("Bui Ngoc Long"));
+    // Dòng tiêu đề
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(15, 0); // Căn giữa một chút
+    display.println(F("ENV MONITORING"));
+    display.drawFastHLine(0, 10, display.width(), SSD1306_WHITE);
 
-  // Green zone (y=16 to y=63): 3 rows (16 pixel in 1 row)
-  // row 1 (y=16 to y=31): Temp
-  display.setTextSize(1);
-  display.setCursor(0, 16);
-  display.print(F("Temp: "));
-  display.setTextSize(2);
-  display.setCursor(40, 16);
-  display.print(temperature, 1);
-  display.print(F(" C"));
 
-  // row 2 (y=32 to y=47): Humidity
-  display.setTextSize(1);
-  display.setCursor(0, 32);
-  display.print(F("Humi: "));
-  display.setTextSize(2);
-  display.setCursor(40, 32);
-  display.print(humidity, 1);
-  display.print(F(" %"));
+    // --- Hiển thị Nhiệt độ (Temp) ---
+    display.setTextSize(1);
+    display.setCursor(0, 16);
+    display.print(F("Temp: "));
+    display.setTextSize(2);
+    display.setCursor(45, 16);
+    display.print(temperature, 1);
+    display.print(F(" C"));
 
-  // row 3 (y=40 to y=63): Gas value
-  display.setTextSize(1);
-  display.setCursor(0, 48);
-  display.print(F("Gas: "));
-  display.setTextSize(2);
-  display.setCursor(40, 48);
-  display.print(gasValue);
+    // --- Hiển thị Độ ẩm (Humidity) ---
+    display.setTextSize(1);
+    display.setCursor(0, 34);
+    display.print(F("Humi: "));
+    display.setTextSize(2);
+    display.setCursor(45, 34);
+    display.print(humidity, 1);
+    display.print(F(" %"));
 
-  display.display();
+    // --- Hiển thị Khí Gas (Gas) ---
+    display.setTextSize(1);
+    display.setCursor(0, 52);
+    display.print(F("Gas:  "));
+    display.setTextSize(2);
+    display.setCursor(45, 52);
+    display.print(gasValue);
 
-  // Print to Serial port
-  Serial.print("Published Temp: ");
-  Serial.print(temperature);
-  Serial.print(" C, Humi: ");
-  Serial.print(humidity);
-  Serial.print(" %, Gas: ");
-  Serial.println(gasValue);
+    // Cập nhật lên màn hình
+    display.display();
 }

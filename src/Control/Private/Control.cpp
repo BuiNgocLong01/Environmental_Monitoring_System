@@ -1,33 +1,41 @@
-#include "Control\Control.h"
-#include "MQTT\MQTT.h"
+#include <Arduino.h>
+#include "Control/Control.h"
+#include "config.h"
 
-// Biến lưu trạng thái nút bấm
-static bool lastButtonState = LOW;
+static bool lastButtonState = HIGH;
+static unsigned long lastDebounceTime = 0;
+static const unsigned long debounceDelay = 50;
 
 void setupControls() {
-  // Khởi tạo các chân
-  pinMode(BUZZER_PIN, OUTPUT);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(BUZZER_PIN, LOW);
-  digitalWrite(LED_PIN, LOW);
+    pinMode(LED_PIN, OUTPUT);
+    pinMode(BUZZER_PIN, OUTPUT);
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    digitalWrite(LED_PIN, LOW);
+    digitalWrite(BUZZER_PIN, LOW);
 }
 
-void handleButton() {
-  bool buttonState = digitalRead(BUTTON_PIN);
-  if (buttonState != lastButtonState) {
-    if (buttonState == LOW) {
-      client.publish(button_topic, "PRESSED");
-      Serial.println("Button Pressed");
+bool handleButton() {
+    bool reading = digitalRead(BUTTON_PIN);
+    bool event = false;
+
+    if (reading != lastButtonState) {
+        lastDebounceTime = millis();
     }
-    lastButtonState = buttonState;
-  }
+
+    if ((millis() - lastDebounceTime) > debounceDelay) {
+        if (reading == LOW && lastButtonState == HIGH) {
+            event = true;
+        }
+    }
+
+    lastButtonState = reading;
+    return event;
 }
 
 void setLedState(bool state) {
-  digitalWrite(LED_PIN, state ? HIGH : LOW);
+    digitalWrite(LED_PIN, state ? HIGH : LOW);
 }
 
 void setBuzzerState(bool state) {
-  digitalWrite(BUZZER_PIN, state ? HIGH : LOW);
+    digitalWrite(BUZZER_PIN, state ? HIGH : LOW);
 }
