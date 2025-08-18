@@ -59,10 +59,10 @@ void updateDisplay(float temperature, float humidity, int gasValue) {
 
     // --- Hiển thị Khí Gas (Gas) ---
     display.setTextSize(1);
-    display.setCursor(0, 52);
+    display.setCursor(0, 50);
     display.print(F("Gas:  "));
     display.setTextSize(2);
-    display.setCursor(45, 52);
+    display.setCursor(45, 50);
     display.print(gasValue);
 
     // Cập nhật lên màn hình

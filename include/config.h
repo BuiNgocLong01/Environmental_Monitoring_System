@@ -25,6 +25,25 @@
 // ===                    System Configuration                   ===
 // =================================================================
 
+// ===== TIMER =====
+#define SAMPLE_MS         3    // đo cảm biến mỗi 3s (không gửi)
+#define PERIODIC_MS       15000   // gửi định kỳ mỗi 15s
+
+// ===== ON-EVENT (vượt ngưỡng) =====
+#define ALARM_COOLDOWN_MS 5000   // 5s chống nhiễu tại ngưỡng
+#define TEMP_HI           35.0f
+#define TEMP_LO           15.0f
+#define HUMI_HI           85.0f
+#define HUMI_LO           30.0f
+#define TEMP_HYST         1.0f    // hysteresis: nhả cảnh báo khi <34 hoặc >16
+#define GAS_HI            60.0f   // 0 - 1023 --> 0 - 100
+#define GAS_HYST          10.0f
+#define HUMI_HYST 5
+
+// (tuỳ chọn) Kênh riêng cho on-event (JSON giữ nguyên)
+#define TOPIC_ALARM  "esp32/" NODE_NAME "/alarm"
+
+
 // Config node
 #if NODE_ID == 1
   #define NODE_NAME "node1"
@@ -46,7 +65,7 @@
 // Sensor & Actuator Pins
 #define GAS_PIN 35
 #define LED_PIN 12
-#define BUZZER_PIN 26
+#define BUZZER_PIN 16
 #define BUTTON_PIN 26
 
 // OLED Display Configuration

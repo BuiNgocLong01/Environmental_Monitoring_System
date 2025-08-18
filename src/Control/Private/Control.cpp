@@ -36,6 +36,14 @@ void setLedState(bool state) {
     digitalWrite(LED_PIN, state ? HIGH : LOW);
 }
 
+void buzzerOn() {
+  digitalWrite(BUZZER_PIN, HIGH);
+}
+
+void buzzerOff() {
+  digitalWrite(BUZZER_PIN, LOW);
+}
+
 void setBuzzerState(bool state) {
     digitalWrite(BUZZER_PIN, state ? HIGH : LOW);
 }

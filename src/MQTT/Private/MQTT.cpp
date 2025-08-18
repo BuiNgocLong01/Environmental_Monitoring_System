@@ -64,3 +64,9 @@ void publishButtonPress() {
         client.publish(TOPIC_BUTTON, "pressed", false);
     }
 }
+
+void publishJsonAlarm(const char* jsonData) {
+  if (client.connected()) {
+    client.publish(TOPIC_ALARM, jsonData, false);
+  }
+}
