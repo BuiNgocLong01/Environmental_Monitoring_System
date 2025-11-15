@@ -25,14 +25,16 @@ static bool alarmTempHi = false, alarmTempLo = false, alarmGas = false;
 static float lastTemp = NAN, lastHumi = NAN;
 static int   lastGas  = -1;
 
-void setup() {
+void setup() 
+{
     Serial.begin(115200);
-    delay(1000);
     Serial.println("\n\nBooting Node: " NODE_NAME);
 
     Wire.begin(I2C_SDA, I2C_SCL);
 
-    // setupDisplay();
+#ifdef __OLED__
+    setupDisplay();
+#endif
     setupSensors();
     setupControls();
 
@@ -44,7 +46,11 @@ void setup() {
     }
     Serial.println("\nWiFi connected!");
 
+    // Init MQTT
     setupMQTT();
+
+    // Time for stable system
+    delay(HOLD_Time);
 }
 
 static void buildJson(char* out, size_t outsz, float t, float h, int g) {
@@ -83,10 +89,17 @@ void loop()
     // Mapping ADC value
     gasValue = map(gasValue, 0, 4095, 0, 100);
 
-    if (String(NODE_NAME) == "node1") 
+    // Offset for actual systems
+    if (String(NODE_NAME) == "node2") 
     { 
-        gasValue += 15;
-    }    
+        gasValue -= 5;
+    } 
+    else if (String(NODE_NAME) == "node1") 
+    {
+        humidity -= 5;
+    }
+    else
+    {}
 
     // =========================
     // 2) ON-EVENT (GỬI NGAY)
@@ -212,14 +225,17 @@ void loop()
       bool changed = false;
       char buf[200];
 
-      if (isnan(lastTemp) || fabs(temperature - lastTemp) >= 0.1) changed = true;
-      if (isnan(lastHumi) || fabs(humidity - lastHumi) >= 0.1) changed = true;
-      if (lastGas < 0   || abs(gasValue - lastGas) >= 1)       changed = true;
+      if (isnan(lastTemp) || fabs(temperature - lastTemp) >= 0.2) changed = true;
+      if (isnan(lastHumi) || fabs(humidity - lastHumi) >= 0.2) changed = true;
+      if (lastGas < 0   || abs(gasValue - lastGas) >= 2)       changed = true;
 
       buildJson(buf, sizeof(buf), temperature, humidity, gasValue);
 
-      // Cập nhật OLED 
-      // updateDisplay(temperature, humidity, gasValue);
+      // Cập nhật OLED
+#ifdef __OLED__ 
+      updateDisplay(temperature, humidity, gasValue);
+#endif
+
       if (changed) {
         char buf[200]; buildJson(buf, sizeof(buf), temperature, humidity, gasValue);
         logData("PERIODIC", temperature, humidity, gasValue);

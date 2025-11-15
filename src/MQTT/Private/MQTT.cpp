@@ -14,10 +14,17 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.printf("Message arrived on topic: %s\n", topic);
     Serial.printf("Message: %s\n", message.c_str());
 
-    if (String(topic) == TOPIC_CONTROL_LED) {
+    if (String(topic) == TOPIC_CONTROL_LED) 
+    {
         if (message == "ON") setLedState(true); else setLedState(false);
-    } else if (String(topic) == TOPIC_CONTROL_BUZZER) {
+    }
+    else if (String(topic) == TOPIC_CONTROL_BUZZER)
+    {
         if (message == "ON") setBuzzerState(true); else setBuzzerState(false);
+    }
+    else
+    {
+        // Do nothing
     }
 }
 

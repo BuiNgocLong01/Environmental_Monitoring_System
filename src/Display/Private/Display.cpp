@@ -24,6 +24,8 @@ void setupDisplay() {
     display.println(F("Monitoring System"));
     display.setCursor(0, 10);
     display.println(F("Bui Ngoc Long"));
+    display.setCursor(0, 20);
+    display.println(F("Waiting for init the system....."));
     display.display();
     delay(2000); // Tạm dừng 2 giây để hiển thị thông điệp
 }

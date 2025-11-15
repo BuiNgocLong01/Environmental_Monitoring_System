@@ -1,5 +1,3 @@
-// include/config.h
-
 #pragma once
 
 // =================================================================
@@ -9,10 +7,11 @@
 #define NODE_ID 1
 // #define NODE_ID 2
 
+#define __OLED__
+
 // WIFI Configuration
 #define WIFI_SSID "Ngoc Long"
 #define WIFI_PASSWORD "12345679"
-
 
 // HiveMQ Cloud Configuration
 #define HIVEMQ_HOST "1ccb3cb0c5104246a2f3023fc5c5d41e.s1.eu.hivemq.cloud" // HOSTNAME
@@ -26,19 +25,20 @@
 // =================================================================
 
 // ===== TIMER =====
-#define SAMPLE_MS         3    // đo cảm biến mỗi 3s (không gửi)
+#define SAMPLE_MS         200    // đo cảm biến mỗi 3s (không gửi)
 #define PERIODIC_MS       15000   // gửi định kỳ mỗi 15s
+#define HOLD_Time         25000  // Wait 25s for stable system
 
 // ===== ON-EVENT (vượt ngưỡng) =====
 #define ALARM_COOLDOWN_MS 5000   // 5s chống nhiễu tại ngưỡng
-#define TEMP_HI           35.0f
+#define TEMP_HI           40.0f
 #define TEMP_LO           15.0f
-#define HUMI_HI           85.0f
+#define HUMI_HI           90.0f
 #define HUMI_LO           30.0f
 #define TEMP_HYST         1.0f    // hysteresis: nhả cảnh báo khi <34 hoặc >16
-#define GAS_HI            60.0f   // 0 - 1023 --> 0 - 100
+#define GAS_HI            70.0f   // 0 - 1023 --> 0 - 100
 #define GAS_HYST          10.0f
-#define HUMI_HYST 5
+#define HUMI_HYST 1
 
 // (tuỳ chọn) Kênh riêng cho on-event (JSON giữ nguyên)
 #define TOPIC_ALARM  "esp32/" NODE_NAME "/alarm"
